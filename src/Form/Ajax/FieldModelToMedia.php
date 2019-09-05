@@ -14,18 +14,28 @@ class FieldModelToMedia {
   const REDIRECT = 'redirect_to_media';
   const REDIRECT_ID = self::REDIRECT;
 
+  /**
+   * Delegated for hook_form_alter().
+   */
   public static function alter(array &$form, FormStateInterface $form_state) {
-    $form['#submit'][] = [static::class, 'submit'];
-    static::dump($form['#submit'], 'qewr');
+    $form['actions']['submit']['#submit'][] = [static::class, 'submit'];
 
     $form[static::REDIRECT] = [
       '#type' => 'checkbox',
       '#title' => t('Redirect to media ingest.'),
+      '#description' => t('Redirect to the media ingest form for the default type of media after the ingest of this item. If there is no default media type, you will be redirected to the ingested item itself.'),
       '#default_value' => $form_state->getValue(static::REDIRECT, TRUE),
       '#weight' => 100,
     ];
   }
 
+  /**
+   * Map the URI/media type mapping into an actual mapping.
+   *
+   * @return string[]
+   *   An associative array mapping URIs to media types which should be used
+   *   by default for those types.
+   */
   protected static function getMapping() {
     static $mapped = NULL;
 
@@ -39,9 +49,18 @@ class FieldModelToMedia {
     return $mapped;
   }
 
+  /**
+   * Get the media type for the selected model.
+   *
+   * @param Drupal\Core\Form\FormStateInterface $form_state
+   *   The form state in which we're operating.
+   *
+   * @return string|null
+   *   The media type ID to which the model's URI mapped; otherwise, NULL
+   *   if there was no mapping.
+   */
   protected static function getMapped(FormStateInterface $form_state) {
     $id = $form_state->getValue(static::VALUE_COORDS);
-    static::dump($id, 'id');
 
     if (!$id) {
       return NULL;
@@ -63,21 +82,49 @@ class FieldModelToMedia {
       NULL;
   }
 
-  protected static function dump($value, $qwer = '') {
-    \Drupal::service('logger.factory')->get('asdf')->debug('{tag}: {value}', [
-      'tag' => $qwer,
-      'value' => print_r($value, TRUE),
-    ]);
-  }
-
+  const NODE_COORDS = [
+    'edit',
+    'field_media_of',
+    'widget',
+    0,
+    'target_id',
+  ];
+  const USE_COORDS = [
+    'edit',
+    'field_media_use',
+    'widget',
+  ];
+  const ORIGINAL_FILE_URI = 'http://pcdm.org/use#OriginalFile';
   public static function submit(array &$form, FormStateInterface $form_state) {
-    static::dump('in our submit...');
     if ($form_state->getValue(static::REDIRECT)) {
       $mapped = static::getMapped($form_state);
 
-      static::dump($mapped, 'set redirect');
-      $form_state->setRedirect('entity.media.add_page', [
+      $query_params = [];
+
+      NestedArray::setValue(
+        $query_params,
+        static::NODE_COORDS,
+        $form_state->getFormObject()->getEntity()->id()
+      );
+
+      $term_storage = \Drupal::service('entity_type.manager')->getStorage('taxonomy_term');
+      $original_use_term_results = $term_storage->getQuery()
+        ->condition('vid', 'islandora_media_use')
+        ->condition('field_external_uri', static::ORIGINAL_FILE_URI)
+        ->execute();
+
+      if ($original_use_term_results) {
+        NestedArray::setValue(
+          $query_params,
+          static::USE_COORDS,
+          reset($original_use_term_results)
+        );
+      }
+
+      $form_state->setRedirect('entity.media.add_form', [
         'media_type' => $mapped,
+      ], [
+        'query' => $query_params,
       ]);
     }
   }
