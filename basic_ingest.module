@@ -1,0 +1,11 @@
+<?php
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\basic_ingest\Form\Ajax\FieldModelToMedia;
+
+/**
+ * Implements hook_form_node_TYPE_form_alter() for islandora_object.
+ */
+function basic_ingest_form_node_islandora_object_form_alter(array &$form, FormStateInterface $form_state) {
+  FieldModelToMedia::alter($form, $form_state);
+}

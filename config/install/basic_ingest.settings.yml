@@ -1,0 +1,14 @@
+---
+map:
+  - uri: 'http://purl.org/coar/resource_type/c_18cc'
+    media_type: audio
+  - uri: 'http://purl.org/coar/resource_type/c_1843'
+    media_type: file
+  - uri: 'http://purl.org/dc/dcmitype/Collection'
+    media_type: null
+  - uri: 'https://schema.org/DigitalDocument'
+    media_type: file
+  - uri: 'http://purl.org/coar/resource_type/c_c513'
+    media_type: image
+  - uri: 'http://purl.org/coar/resource_type/c_12ce'
+    media_type: video
