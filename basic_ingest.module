@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * General hook implementations.
+ */
+
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\basic_ingest\Form\Ajax\FieldModelToMedia;
 
