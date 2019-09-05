@@ -34,7 +34,9 @@ class FieldModelToMedia {
    * Delegated for hook_form_alter().
    */
   public static function alter(array &$form, FormStateInterface $form_state) {
-    $form['actions']['submit']['#submit'][] = [static::class, 'submit'];
+    $submit =& $form['actions']['submit']['#submit'];
+    array_unshift($submit, [static::class, 'setDisplayHints']);
+    $submit[] = [static::class, 'submit'];
 
     $form[static::REDIRECT] = [
       '#type' => 'checkbox',
@@ -43,14 +45,51 @@ class FieldModelToMedia {
       '#default_value' => $form_state->getValue(static::REDIRECT, TRUE),
       '#weight' => 100,
     ];
+
+    // XXX: We suppress the display of the display hints selection in the form,
+    // passing our own defaults.
+    $display_hints =& NestedArray::getValue($form, ['field_display_hints']);
+    $display_hints['#access'] = FALSE;
+  }
+
+  /**
+   * Submission handler; set our default display hints at the start.
+   */
+  public static function setDisplayHints(array &$form, FormStateInterface $form_state) {
+    $display_hints = static::getDisplayHints($form_state);
+    $form_state->setValue(['field_display_hints'], array_keys($display_hints));
+  }
+
+  /**
+   * Helper; determine which display hints should be set, based upon the model.
+   */
+  protected static function getDisplayHints(FormStateInterface $form_state) {
+    $mapped = static::getMapped($form_state);
+    $hints = isset($mapped['display_hints']) ?
+      $mapped['display_hints'] :
+      [];
+
+    $term_storage = \Drupal::service('entity_type.manager')->getStorage('taxonomy_term');
+    $display_results = $term_storage->getQuery()
+      ->condition('vid', 'islandora_display')
+      ->execute();
+    $map = function ($result) use ($term_storage, $hints) {
+      $term = $term_storage->load($result);
+      return in_array(reset($term->get('field_external_uri')->getValue())['uri'], $hints) ?
+        $term :
+        FALSE;
+    };
+    return array_filter(array_map($map, array_combine($display_results, $display_results)));
   }
 
   /**
    * Map the URI/media type mapping into an actual mapping.
    *
    * @return string[]
-   *   An associative array mapping URIs to media types which should be used
-   *   by default for those types.
+   *   An associative array mapping URIs to associative arrays containing:
+   *   - media_type: The media type which should be used for the given URI
+   *     by default for those types.
+   *   - display_hints: An optional array of URIs representing viewing hints.
    */
   protected static function getMapping() {
     static $mapped = NULL;
@@ -59,7 +98,7 @@ class FieldModelToMedia {
       $mapped = [];
       foreach (\Drupal::config('basic_ingest.settings')->get('map') as $info) {
         assert(!isset($mapped[$info['uri']]), 'Multiple mappings.');
-        $mapped[$info['uri']] = $info['media_type'];
+        $mapped[$info['uri']] = $info;
       }
     }
     return $mapped;
@@ -71,8 +110,8 @@ class FieldModelToMedia {
    * @param Drupal\Core\Form\FormStateInterface $form_state
    *   The form state in which we're operating.
    *
-   * @return string|null
-   *   The media type ID to which the model's URI mapped; otherwise, NULL
+   * @return array|null
+   *   The info to which the model's URI mapped; otherwise, NULL
    *   if there was no mapping.
    */
   protected static function getMapped(FormStateInterface $form_state) {
@@ -128,7 +167,7 @@ class FieldModelToMedia {
       }
 
       $form_state->setRedirect('entity.media.add_form', [
-        'media_type' => $mapped,
+        'media_type' => $mapped['media_type'],
       ], [
         'query' => $query_params,
       ]);

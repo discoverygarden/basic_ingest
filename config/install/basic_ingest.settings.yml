@@ -8,7 +8,11 @@ map:
     media_type: null
   - uri: 'https://schema.org/DigitalDocument'
     media_type: file
+    display_hints:
+      - 'http://mozilla.github.io/pdf.js'
   - uri: 'http://purl.org/coar/resource_type/c_c513'
     media_type: image
+    display_hints:
+      - 'http://openseadragon.github.io'
   - uri: 'http://purl.org/coar/resource_type/c_12ce'
     media_type: video

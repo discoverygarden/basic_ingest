@@ -12,3 +12,8 @@ basic_ingest.settings:
             type: uri
           media_type:
             type: string
+          display_hints:
+            type: sequence
+            nullable: true
+            sequence:
+              type: uri
