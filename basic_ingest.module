@@ -6,7 +6,7 @@
  */
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\basic_ingest\Form\Ajax\FieldModelToMedia;
+use Drupal\basic_ingest\Form\FieldModelToMedia;
 
 /**
  * Implements hook_form_node_TYPE_form_alter() for islandora_object.

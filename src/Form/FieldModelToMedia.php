@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\basic_ingest\Form\Ajax;
+namespace Drupal\basic_ingest\Form;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Component\Utility\NestedArray;
