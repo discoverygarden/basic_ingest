@@ -5,7 +5,7 @@ namespace Drupal\basic_ingest\Form;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Helper; redirect to the related node when ingest media belonging to a ndoe.
+ * Helper; redirect to the related node when ingesting media belonging to a node.
  */
 class NodeMediaRedirect {
 
