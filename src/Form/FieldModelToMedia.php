@@ -7,14 +7,15 @@ use Drupal\Component\Utility\NestedArray;
 
 /**
  * Helper; redirect to media ingest based on item model.
+ *
+ * Additionally, we want some default display hints based on the model, instead
+ * of requiring that they be selected manually.
  */
 class FieldModelToMedia {
 
   const FORM_COORDS = ['field_model', 'widget'];
   const VALUE_COORDS = ['field_model', 0, 'target_id'];
-  const NAME = 'field_model';
   const REDIRECT = 'redirect_to_media';
-  const REDIRECT_ID = self::REDIRECT;
 
   const NODE_COORDS = [
     'edit',
@@ -75,7 +76,8 @@ class FieldModelToMedia {
       ->execute();
     $map = function ($result) use ($term_storage, $hints) {
       $term = $term_storage->load($result);
-      return in_array(reset($term->get('field_external_uri')->getValue())['uri'], $hints) ?
+      $uri_info = $term->get('field_external_uri')->getValue();
+      return in_array(reset($uri_info)['uri'], $hints) ?
         $term :
         FALSE;
     };
@@ -138,7 +140,7 @@ class FieldModelToMedia {
   }
 
   /**
-   * Form submission handler.
+   * Form submission handler; do the redirects if selected.
    */
   public static function submit(array &$form, FormStateInterface $form_state) {
     if ($form_state->getValue(static::REDIRECT)) {
@@ -146,32 +148,48 @@ class FieldModelToMedia {
 
       $query_params = [];
 
+      // Make the media be ingested in the context of the node, by default.
       NestedArray::setValue(
         $query_params,
         static::NODE_COORDS,
         $form_state->getFormObject()->getEntity()->id()
       );
 
-      $term_storage = \Drupal::service('entity_type.manager')->getStorage('taxonomy_term');
-      $original_use_term_results = $term_storage->getQuery()
-        ->condition('vid', 'islandora_media_use')
-        ->condition('field_external_uri', static::ORIGINAL_FILE_URI)
-        ->execute();
-
-      if ($original_use_term_results) {
+      // Make the media ingest select the "original use" term, by default.
+      $original_use_id = static::getOriginalUseId();
+      if ($original_use_id) {
         NestedArray::setValue(
           $query_params,
           static::USE_COORDS,
-          reset($original_use_term_results)
+          $original_use_id
         );
       }
 
+      // Actually set the redirect.
       $form_state->setRedirect('entity.media.add_form', [
         'media_type' => $mapped['media_type'],
       ], [
         'query' => $query_params,
       ]);
     }
+  }
+
+  /**
+   * Fetch the taxonomy term ID for the "original use" term.
+   *
+   * @return int|bool
+   *   The ID of the first taxonomy term with the "original use" URI if it
+   *   exists; otherwise, boolean FALSE.
+   */
+  protected static function getOriginalUseId() {
+    $term_storage = \Drupal::service('entity_type.manager')->getStorage('taxonomy_term');
+    $original_use_term_results = $term_storage->getQuery()
+      ->condition('vid', 'islandora_media_use')
+      ->condition('field_external_uri', static::ORIGINAL_FILE_URI)
+      ->execute();
+
+    return reset($original_use_term_results);
+
   }
 
 }
