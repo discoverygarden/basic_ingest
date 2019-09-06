@@ -6,10 +6,11 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Component\Utility\NestedArray;
 
 /**
- * Helper; redirect to media ingest based on item model.
+ * Helper; set some defaults and redirect to media ingest based on item model.
  *
- * Additionally, we want some default display hints based on the model, instead
- * of requiring that they be selected manually.
+ * Defaults set include display hints (of which we suppress the element's
+ * display), instead of requiring that they be selected manually, as well as
+ * selecting the "original use" option for the "media use".
  */
 class FieldModelToMedia {
 
