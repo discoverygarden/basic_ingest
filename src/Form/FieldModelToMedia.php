@@ -147,31 +147,33 @@ class FieldModelToMedia {
     if ($form_state->getValue(static::REDIRECT)) {
       $mapped = static::getMapped($form_state);
 
-      $query_params = [];
+      if (!empty($mapped['media_type'])) {
+        $query_params = [];
 
-      // Make the media be ingested in the context of the node, by default.
-      NestedArray::setValue(
-        $query_params,
-        static::NODE_COORDS,
-        $form_state->getFormObject()->getEntity()->id()
-      );
-
-      // Make the media ingest select the "original use" term, by default.
-      $original_use_id = static::getOriginalUseId();
-      if ($original_use_id) {
+        // Make the media be ingested in the context of the node, by default.
         NestedArray::setValue(
           $query_params,
-          static::USE_COORDS,
-          $original_use_id
+          static::NODE_COORDS,
+          $form_state->getFormObject()->getEntity()->id()
         );
-      }
 
-      // Actually set the redirect.
-      $form_state->setRedirect('entity.media.add_form', [
-        'media_type' => $mapped['media_type'],
-      ], [
-        'query' => $query_params,
-      ]);
+        // Make the media ingest select the "original use" term, by default.
+        $original_use_id = static::getOriginalUseId();
+        if ($original_use_id) {
+          NestedArray::setValue(
+            $query_params,
+            static::USE_COORDS,
+            $original_use_id
+          );
+        }
+
+        // Actually set the redirect.
+        $form_state->setRedirect('entity.media.add_form', [
+          'media_type' => $mapped['media_type'],
+        ], [
+          'query' => $query_params,
+        ]);
+      }
     }
   }
 
