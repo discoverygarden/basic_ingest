@@ -8,6 +8,7 @@
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\basic_ingest\Form\FieldModelToMedia;
 use Drupal\basic_ingest\Form\NodeMediaRedirect;
+use Drupal\Core\Field\Plugin\Field\FieldWidget\OptionsWidgetBase;
 
 /**
  * Implements hook_form_ETYPE_BUNDLE_form_alter() for node/islandora_object.
@@ -21,4 +22,17 @@ function basic_ingest_form_node_islandora_object_form_alter(array &$form, FormSt
  */
 function basic_ingest_form_media_form_alter(array &$form, FormStateInterface $form_state) {
   NodeMediaRedirect::alter($form, $form_state);
+}
+
+/**
+ * Implements hook_field_widget_form_alter().
+ */
+function basic_ingest_field_widget_form_alter(array &$element, FormStateInterface $form_state, array &$context) {
+
+  // XXX: Suppress widget display if it's empty.
+  if ($context['items']->getFieldDefinition()->getName() == 'field_access_terms' && $context['widget'] instanceof OptionsWidgetBase) {
+    $form_state->loadInclude('basic_ingest', 'inc', 'includes/utilities');
+    $element['#after_build'][] = '_basic_ingest_suppress_if_no_options';
+  }
+
 }
