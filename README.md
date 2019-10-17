@@ -8,7 +8,7 @@ Basic repository item ingest improvements.
 
 This module requires the following modules/libraries:
 
-* [Islandora](https://github.com/Islandora-CLAW/islandora)
+* [Islandora](https://github.com/Islandora/islandora)
 * [Prepopulate](https://www.drupal.org/project/prepopulate)
 
 ## Installation
