@@ -1,6 +1,4 @@
-# This .info.yml files provides the basic information about our module to Drupal
-# More: https://www.drupal.org/node/2000204
-name: 'basic_ingest'
+name: 'Basic Ingest'
 description: "Basic ingest flow"
 type: module
 package: DGI Helpers
