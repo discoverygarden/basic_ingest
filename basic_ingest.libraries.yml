@@ -1,0 +1,6 @@
+# basic_ingest.libraries.yml
+basic_ingest:
+  version: 1.x
+  css:
+    theme:
+      css/basic_ingest.module.css: {}

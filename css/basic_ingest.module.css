@@ -1,0 +1,9 @@
+/**
+ * @file
+ *
+ * CSS overrides for basic_ingest for a better UX.
+ */
+
+.tabledrag-toggle-weight-wrapper .tabledrag-toggle-weight {
+  display: none;
+}
