@@ -52,6 +52,12 @@ class FieldModelToMedia {
     // passing our own defaults.
     $display_hints =& NestedArray::getValue($form, ['field_display_hints']);
     $display_hints['#access'] = FALSE;
+
+    // XXX: Suppress the display of setting a custom PID on ingest.
+    $form['field_pid']['#access'] = FALSE;
+
+    // XXX: Remove the display of the "Show/Hide row weights link".
+    $form['#attached']['library'][] = 'basic_ingest/basic_ingest';
   }
 
   /**
