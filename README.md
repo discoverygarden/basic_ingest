@@ -30,10 +30,9 @@ Current maintainers:
 
 ## Development
 
-If you would like to contribute to this module, please check out the helpful
-[Documentation](https://github.com/Islandora/islandora/wiki#wiki-documentation-for-developers),
-[Developers](http://islandora.ca/developers) section on Islandora.ca and
-contact [discoverygarden](http://support.discoverygarden.ca).
+If you would like to contribute to this module create an issue, pull request
+and or contact
+[discoverygarden](http://support.discoverygarden.ca).
 
 ## License
 
