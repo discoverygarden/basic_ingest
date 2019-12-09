@@ -34,19 +34,19 @@ Media type, to narrow down the selection list.
 ## Usage
 
 Most of the improvements in this module appear automatically and don't require
-any further configuration. These include:
+any further configuration.
 
-* Some CSS to improve the user experience during ingest
-* Automatic suppression of fields with options (checkboxes, select fields, and
-radio buttons) if no options are present
-* Optional automatic redirection to a parent node when submitting Media that are
-media of the given node
-* Optional automatic redirection to the Media submission form when creating
-nodes that expect media
-* Automatic selection and suppression of display hints when they're in the
-Media type mapping
-* Suppression of the PID field during Resource Item creation
-* Suppression of the show/hide row weights link
+* Some CSS is provided to improve the user experience during ingest
+* Fields with options (checkboxes, select fields, and radio buttons) are
+automatically suppressed if they contain no options
+* When Media are ingested, an option is given to automatically redirect to that
+Media's parent
+* When Repository Items are created that expect a Media to be attached, an
+option is given to automatically redirect to the Media submission form
+* Display hints can also be mapped to Media types so that the display hint
+selection is suppressed
+* The PID field is suppressed during Resource Item creation
+* The link to show and hide row weights is suppressed
 
 ## Troubleshooting/Issues
 
