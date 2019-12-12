@@ -9,6 +9,44 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\basic_ingest\Form\FieldModelToMedia;
 use Drupal\basic_ingest\Form\NodeMediaRedirect;
 use Drupal\Core\Field\Plugin\Field\FieldWidget\OptionsWidgetBase;
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help() for adding/editing Media and Resource Items.
+ */
+function basic_ingest_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'node.add':
+    case 'node.edit':
+      $node_type = $route_match->getParameter('node_type');
+      if ($node_type && $node_type->get('type') == 'islandora_object') {
+        return <<<EOHELP
+<p>Adding this Repository Item to a collection isn't required, but can be used to organize items for display purposes. Use the 'Add another item' button to faciliate multiple collection inheritancy.</p>
+<p>When creating a Repository Item using the 'Collection' model, you will also be asked to optionally provide a 'Representative Image'; this will be used as a thumbnail, as well as in other situations where an image representative of the collection may be desirable.</p>
+<p>By default, if any Media types are associated with the selected model, you will be redirected to the Media ingest page after clicking 'Save'.</p>
+<p>Uncheck 'Published' to keep this Repository Item out of public view. Unpublished items will still be preserved.</p>
+EOHELP;
+      }
+    case 'entity.media.add_form':
+    case 'entity.media.edit_form':
+      module_load_include('inc', 'basic_ingest', 'includes/utilities');
+      $media_uses = [];
+      foreach (basic_ingest_get_media_usage_descriptions() as $media_use => $description) {
+        if (!empty($description)) {
+          $media_uses[] = "<li><i>{$media_use}</i>: $description";
+        }
+      }
+      if (!empty($media_uses)) {
+        $media_use_string = implode("\n", $media_uses);
+        return <<<EOHELP
+<p>The 'Media Use' field is used to differentiate a Media file between other iterations of that Media. These include:</p>
+<ul>
+{$media_use_string}
+</ul>
+EOHELP;
+      }
+  }
+}
 
 /**
  * Implements hook_form_ETYPE_BUNDLE_form_alter() for node/islandora_object.
