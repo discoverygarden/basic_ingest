@@ -42,8 +42,7 @@ class FieldModelToMedia {
 
     $form[static::REDIRECT] = [
       '#type' => 'checkbox',
-      '#title' => t('Redirect to media ingest.'),
-      '#description' => t('Redirect to the media ingest form for the default type of media after the ingest of this item. If there is no default media type, you will be redirected to the ingested item itself.'),
+      '#title' => t('Add media'),
       '#default_value' => $form_state->getValue(static::REDIRECT, TRUE),
       '#weight' => 100,
     ];
