@@ -26,6 +26,7 @@ class NodeMediaRedirect {
    * Form submission handler.
    */
   public static function submit(array &$form, FormStateInterface $form_state) {
+    \Drupal::messenger()->addStatus('Larger items may take a few minutes to appear for viewing due to processing.');
     $node_id = $form_state->getValue(static::NODE_COORDS);
     if ($node_id) {
       $form_state->setRedirect('entity.node.canonical', [
