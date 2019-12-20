@@ -57,9 +57,6 @@ class FieldModelToMedia {
 
     // XXX: Remove the display of the "Show/Hide row weights link".
     $form['#attached']['library'][] = 'basic_ingest/basic_ingest';
-
-    // Change some text to be more friendly.
-    $form['field_model']['widget']['#title'] = t('Content type');
   }
 
   /**
