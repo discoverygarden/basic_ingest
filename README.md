@@ -2,7 +2,9 @@
 
 ## Introduction
 
-Basic repository item ingest improvements.
+Quality of life changes when adding Repository Items and Media to provide
+automatic redirection to relevant pages and suppress form elements when only
+one choice is actually correct.
 
 ## Requirements
 
