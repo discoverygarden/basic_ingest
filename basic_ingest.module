@@ -27,6 +27,8 @@ function basic_ingest_help($route_name, RouteMatchInterface $route_match) {
 <p>Uncheck 'Published' to keep this Repository Item out of public view. Unpublished items will still be preserved.</p>
 EOHELP;
       }
+      break;
+
     case 'entity.media.add_form':
     case 'entity.media.edit_form':
       module_load_include('inc', 'basic_ingest', 'includes/utilities');
@@ -45,6 +47,8 @@ EOHELP;
 </ul>
 EOHELP;
       }
+      break;
+
   }
 }
 
