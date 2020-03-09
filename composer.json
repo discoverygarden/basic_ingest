@@ -1,0 +1,10 @@
+{
+    "name": "discoverygarden/basic_ingest",
+    "description": "Islandora 8 Basic Ingest Workflow",
+    "type": "drupal-module",
+    "require": {
+        "islandora/islandora": "^1.0",
+        "drupal/prepopulate": "*"
+    },
+    "license": "GPL-3.0-only"
+}
