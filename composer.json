@@ -3,8 +3,8 @@
     "description": "Islandora 8 Basic Ingest Workflow",
     "type": "drupal-module",
     "require": {
-        "islandora/islandora": "dev-alternate-constraints",
-        "drupal/prepopulate": "*"
+        "islandora/islandora": "^1",
+        "drupal/prepopulate": "^2"
     },
     "license": "GPL-3.0-only"
 }
