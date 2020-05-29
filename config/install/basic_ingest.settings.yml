@@ -14,11 +14,13 @@ map:
     media_type: image
     display_hints:
       - 'http://openseadragon.github.io'
-  - uri: 'http://purl.org/coar/resource_type/c_12ce'
-    media_type: video
-  - uri: 'https://schema.org/Book'
-    media_type: null
   - uri: 'http://id.loc.gov/ontologies/bibframe/part'
     media_type: image
     display_hints:
       - 'http://openseadragon.github.io'
+  - uri: 'https://schema.org/Book'
+    media_type: null
+  - uri: 'https://schema.org/PublicationIssue'
+    media_type: null
+  - uri: 'http://purl.org/coar/resource_type/c_12ce'
+    media_type: video
