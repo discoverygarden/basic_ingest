@@ -7,7 +7,7 @@ map:
   - uri: 'http://purl.org/dc/dcmitype/Collection'
     media_type: null
   - uri: 'https://schema.org/DigitalDocument'
-    media_type: file
+    media_type: document
     display_hints:
       - 'http://mozilla.github.io/pdf.js'
   - uri: 'http://purl.org/coar/resource_type/c_c513'
