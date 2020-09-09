@@ -75,7 +75,7 @@ function basic_ingest_form_media_form_alter(array &$form, FormStateInterface $fo
   // stuff probably isn't worth it for this right now.
   $query_published_param = \Drupal::request()->query->get('node_is_published');
   if ($query_published_param && isset($query_published_param['value'])) {
-    $form['status']['widget']['value']['#default_value'] = (bool)$query_published_param['value'];
+    $form['status']['widget']['value']['#default_value'] = (bool) $query_published_param['value'];
   }
 }
 
