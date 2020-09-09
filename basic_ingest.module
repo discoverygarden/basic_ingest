@@ -64,6 +64,19 @@ function basic_ingest_form_node_islandora_object_form_alter(array &$form, FormSt
  */
 function basic_ingest_form_media_form_alter(array &$form, FormStateInterface $form_state) {
   NodeMediaRedirect::alter($form, $form_state);
+  // We want to carry the published 'status' value when redirecting from the
+  // node form to the media form, but Prepopulate doesn't fill radio buttons
+  // or checkboxes due to security risks with permissions forms, so we need to
+  // manually carry the value through, and the easiest way to do that is to add
+  // a query parameter like we do for other values like 'media use' and 'media
+  // of', then set the value according to that parameter here.
+  // A better way to set the published status would be to dynamically get the
+  // status of the entity in the 'media of' field, but throwing around ajax
+  // stuff probably isn't worth it for this right now.
+  $query_published_param = \Drupal::request()->query->get('node_is_published');
+  if ($query_published_param && isset($query_published_param['value'])) {
+    $form['status']['widget']['value']['#default_value'] = (bool)$query_published_param['value'];
+  }
 }
 
 /**
