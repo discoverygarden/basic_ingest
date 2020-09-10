@@ -30,6 +30,9 @@ class FieldModelToMedia {
     'field_media_use',
     'widget',
   ];
+  const PUBLISHED_FLAG = [
+    'node_is_published',
+  ];
   const ORIGINAL_FILE_URI = 'http://pcdm.org/use#OriginalFile';
 
   /**
@@ -171,6 +174,13 @@ class FieldModelToMedia {
             $original_use_id
           );
         }
+
+        // Set the 'published' flag.
+        NestedArray::setValue(
+          $query_params,
+          static::PUBLISHED_FLAG,
+          $form_state->getValue('status', 1)
+        );
 
         // Actually set the redirect.
         $form_state->setRedirect('entity.media.add_form', [
