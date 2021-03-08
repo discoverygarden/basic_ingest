@@ -3,6 +3,7 @@ description: "Basic ingest flow"
 type: module
 package: DGI Helpers
 core: 8.x
+core_version_requirement: ^8 || ^9
 dependencies:
   - islandora
   - prepopulate
