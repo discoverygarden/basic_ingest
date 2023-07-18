@@ -4,6 +4,7 @@ namespace Drupal\basic_ingest\Form;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Component\Utility\NestedArray;
+use Drupal\taxonomy\TermStorageInterface;
 
 /**
  * Helper; set some defaults and redirect to media ingest based on item model.
@@ -79,8 +80,9 @@ class FieldModelToMedia {
       $mapped['display_hints'] :
       [];
 
-    $term_storage = \Drupal::service('entity_type.manager')->getStorage('taxonomy_term');
+    $term_storage = static::getTermStorage();
     $display_results = $term_storage->getQuery()
+      ->accessCheck(TRUE)
       ->condition('vid', 'islandora_display')
       ->execute();
     $map = function ($result) use ($term_storage, $hints) {
@@ -200,14 +202,24 @@ class FieldModelToMedia {
    *   exists; otherwise, boolean FALSE.
    */
   protected static function getOriginalUseId() {
-    $term_storage = \Drupal::service('entity_type.manager')->getStorage('taxonomy_term');
-    $original_use_term_results = $term_storage->getQuery()
+    $original_use_term_results = static::getTermStorage()->getQuery()
+      ->accessCheck(TRUE)
       ->condition('vid', 'islandora_media_use')
       ->condition('field_external_uri', static::ORIGINAL_FILE_URI)
       ->execute();
 
     return reset($original_use_term_results);
 
+  }
+
+  /**
+   * Helper; get the taxonomy term storage service.
+   *
+   * @return \Drupal\taxonomy\TermStorageInterface
+   *   The taxonomy term storage service.
+   */
+  protected static function getTermStorage() : TermStorageInterface {
+    return \Drupal::service('entity_type.manager')->getStorage('taxonomy_term');
   }
 
 }
