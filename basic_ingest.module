@@ -31,7 +31,7 @@ EOHELP;
 
     case 'entity.media.add_form':
     case 'entity.media.edit_form':
-      module_load_include('inc', 'basic_ingest', 'includes/utilities');
+      \Drupal::moduleHandler()->loadInclude('basic_ingest', 'inc', 'includes/utilities');
       $media_uses = [];
       foreach (basic_ingest_get_media_usage_descriptions() as $media_use => $description) {
         if (!empty($description)) {
