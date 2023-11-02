@@ -32,7 +32,10 @@ class FieldModelToMedia {
     'widget',
   ];
   const PUBLISHED_FLAG = [
-    'node_is_published',
+    'edit',
+    'status',
+    'widget',
+    'value',
   ];
   const ORIGINAL_FILE_URI = 'http://pcdm.org/use#OriginalFile';
 

@@ -5,6 +5,7 @@
  * General hook implementations.
  */
 
+use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\basic_ingest\Form\FieldModelToMedia;
 use Drupal\basic_ingest\Form\NodeMediaRedirect;
@@ -73,9 +74,10 @@ function basic_ingest_form_media_form_alter(array &$form, FormStateInterface $fo
   // A better way to set the published status would be to dynamically get the
   // status of the entity in the 'media of' field, but throwing around ajax
   // stuff probably isn't worth it for this right now.
-  $query_published_param = \Drupal::request()->query->get(FieldModelToMedia::PUBLISHED_FLAG[0]);
-  if ($query_published_param && isset($query_published_param['value'])) {
-    $form['status']['widget']['value']['#default_value'] = (bool) $query_published_param['value'];
+  $query_params = \Drupal::request()->query->all();
+  $query_published_param = NestedArray::getValue($query_params, FieldModelToMedia::PUBLISHED_FLAG, $exists);
+  if ($exists) {
+    $form['status']['widget']['value']['#default_value'] = (bool) $query_published_param;
   }
 }
 
