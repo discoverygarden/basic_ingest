@@ -160,11 +160,12 @@ class FieldModelToMedia {
       $mapped = static::getMapped($form_state);
 
       if (!empty($mapped['media_type'])) {
-
         switch ($mapped['media_type']) {
           case 'media':
-            // If mapped to media, redirect to media upload page.
-            $form_state->setRedirect('entity.media.add_page');
+            // If mapped to media, redirect to node's media upload page.
+            $form_state->setRedirect('islandora.add_media_to_node_page', [
+              'node' => $form_state->getFormObject()->getEntity()->id(),
+            ]);
             break;
 
           default:
@@ -178,6 +179,13 @@ class FieldModelToMedia {
               $form_state->getFormObject()->getEntity()->id()
             );
 
+            // Set the 'published' flag.
+            NestedArray::setValue(
+              $query_params,
+              static::PUBLISHED_FLAG,
+              $form_state->getValue('status', 1)
+            );
+
             // Make the media ingest select the "original use" term, by default.
             $original_use_id = static::getOriginalUseId();
             if ($original_use_id) {
@@ -187,13 +195,6 @@ class FieldModelToMedia {
                 $original_use_id
               );
             }
-
-            // Set the 'published' flag.
-            NestedArray::setValue(
-              $query_params,
-              static::PUBLISHED_FLAG,
-              $form_state->getValue('status', 1)
-            );
 
             // Actually set the redirect.
             $form_state->setRedirect('entity.media.add_form', [
