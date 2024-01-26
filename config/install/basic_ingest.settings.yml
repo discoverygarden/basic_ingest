@@ -23,4 +23,4 @@ map:
   - uri: 'https://schema.org/PublicationIssue'
     media_type: null
   - uri: 'http://purl.org/coar/resource_type/c_12ce'
-    media_type: video
+    media_type: media

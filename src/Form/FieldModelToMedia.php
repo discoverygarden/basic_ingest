@@ -2,8 +2,8 @@
 
 namespace Drupal\basic_ingest\Form;
 
-use Drupal\Core\Form\FormStateInterface;
 use Drupal\Component\Utility\NestedArray;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\taxonomy\TermStorageInterface;
 
 /**
@@ -79,8 +79,7 @@ class FieldModelToMedia {
    */
   protected static function getDisplayHints(FormStateInterface $form_state) {
     $mapped = static::getMapped($form_state);
-    $hints = isset($mapped['display_hints']) ?
-      $mapped['display_hints'] :
+    $hints = $mapped['display_hints'] ??
       [];
 
     $term_storage = static::getTermStorage();
@@ -161,38 +160,49 @@ class FieldModelToMedia {
       $mapped = static::getMapped($form_state);
 
       if (!empty($mapped['media_type'])) {
-        $query_params = [];
 
-        // Make the media be ingested in the context of the node, by default.
-        NestedArray::setValue(
-          $query_params,
-          static::NODE_COORDS,
-          $form_state->getFormObject()->getEntity()->id()
-        );
+        switch ($mapped['media_type']) {
+          case 'media':
+            // If mapped to media, redirect to media upload page.
+            $form_state->setRedirect('entity.media.add_page');
+            break;
 
-        // Make the media ingest select the "original use" term, by default.
-        $original_use_id = static::getOriginalUseId();
-        if ($original_use_id) {
-          NestedArray::setValue(
-            $query_params,
-            static::USE_COORDS,
-            $original_use_id
-          );
+          default:
+            $query_params = [];
+
+            // Make the media be ingested in the
+            // context of the node, by default.
+            NestedArray::setValue(
+              $query_params,
+              static::NODE_COORDS,
+              $form_state->getFormObject()->getEntity()->id()
+            );
+
+            // Make the media ingest select the "original use" term, by default.
+            $original_use_id = static::getOriginalUseId();
+            if ($original_use_id) {
+              NestedArray::setValue(
+                $query_params,
+                static::USE_COORDS,
+                $original_use_id
+              );
+            }
+
+            // Set the 'published' flag.
+            NestedArray::setValue(
+              $query_params,
+              static::PUBLISHED_FLAG,
+              $form_state->getValue('status', 1)
+            );
+
+            // Actually set the redirect.
+            $form_state->setRedirect('entity.media.add_form', [
+              'media_type' => $mapped['media_type'],
+            ], [
+              'query' => $query_params,
+            ]);
+
         }
-
-        // Set the 'published' flag.
-        NestedArray::setValue(
-          $query_params,
-          static::PUBLISHED_FLAG,
-          $form_state->getValue('status', 1)
-        );
-
-        // Actually set the redirect.
-        $form_state->setRedirect('entity.media.add_form', [
-          'media_type' => $mapped['media_type'],
-        ], [
-          'query' => $query_params,
-        ]);
       }
     }
   }

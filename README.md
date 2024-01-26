@@ -29,7 +29,7 @@ This mapping lives in the configuration at `basic_ingest.settings.map`, and
 contains a list of mapping objects supporting the following structure:
 
 * `uri`: the URI of the model to apply this mapping to
-* `media_type`: the ID of the media type this model should be mapped to
+* `media_type`: the ID of the media type this model should be mapped to, use media to redirect to the generic media upload page
 * `display_hints`: a sequence of display hint URIs applicable to the given
 Media type, to narrow down the selection list.
 
