@@ -6,22 +6,19 @@
  */
 
 /**
- * Implements hook_update_N().
- *
- * Moves the help text for the Repository Item content type to the
- * node type configuration so that it's not hardcoded in the form.
+ * Moves the help text to config.
  */
-function basic_ingest_update_8001() {
-  $repository_help_text = <<<EOHELP
-<p>Adding this Repository Item to a collection isn't required, but can be used to organize items for display purposes. Use the 'Add container' button to faciliate multiple collection inheritancy.</p>
-<p>When creating a Repository Item using the 'Collection' content type, you will also be asked to optionally provide a 'Representative Image'; this will be used as a thumbnail, as well as in other situations where an image representative of the collection may be desirable.</p>
-<p>By default, if any Media types are associated with the selected content type, you will be redirected to the Media ingest page after clicking 'Save'.</p>
-<p>Uncheck 'Published' to keep this Repository Item out of public view. Unpublished items will still be preserved.</p>
-EOHELP;
+function basic_ingest_update_9001() {
+  $help_text = <<<EOHELP
+ <p>Adding this Repository Item to a collection isn't required, but can be used to organize items for display purposes. Use the 'Add container' button to facilitate multiple collection inheritance.</p>
+ <p>When creating a Repository Item using the 'Collection' content type, you will also be asked to optionally provide a 'Representative Image'; this will be used as a thumbnail, as well as in other situations where an image representative of the collection may be desirable.</p>
+ <p>By default, if any Media types are associated with the selected content type, you will be redirected to the Media ingest page after clicking 'Save'.</p>
+ <p>Uncheck 'Published' to keep this Repository Item out of public view. Unpublished items will still be preserved.</p>
+ EOHELP;
 
-  // Move the node help text to the node config
-  // so that it's not hardcoded in the form.
+  $current_help_text = \Drupal::config('node.type.islandora_object')
+    ->get('help') ?: '';
   \Drupal::service('config.factory')->getEditable('node.type.islandora_object')
-    ->set('help', $repository_help_text)
+    ->set('help', $current_help_text . PHP_EOL . $help_text)
     ->save();
 }
