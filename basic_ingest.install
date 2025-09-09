@@ -19,6 +19,6 @@ function basic_ingest_update_9001() {
   $current_help_text = \Drupal::config('node.type.islandora_object')
     ->get('help') ?: '';
   \Drupal::service('config.factory')->getEditable('node.type.islandora_object')
-    ->set('help', $current_help_text . PHP_EOL . $help_text)
+    ->set('help', $help_text . PHP_EOL . $current_help_text)
     ->save();
 }
